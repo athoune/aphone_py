@@ -12,15 +12,18 @@ class Phonet(object):
             txt_size += 1
         fun = """def filter_%i(txt, out):
 """ % self.cpt
-        #  TODO handles clause as list, and joining with "and"
-        #  TODO $ => len == size
         #  TODO handling ^ out == "" ? or a flag?
-        if rule['alternates'] != u"":
-            fun += """    if len(txt) >= %i and txt[:%i] == u'%s' and txt[%i] in u'%s':
-""" % (txt_size, len(rule['text']), rule['text'], len(rule['text']), rule['alternates'])
+        filters = []
+        if rule['ending']:
+            filters.append("len(txt) >= %i" % txt_size)
         else:
-            fun += """    if len(txt) >= %i and txt[:%i] == u'%s':
-""" % (txt_size, len(rule['text']), rule['text'])
+            filters.append("len(txt) == %i" % txt_size)
+        filters.append("txt[:%i] == u'%s" % (len(rule['text']), rule['text']))
+        if rule['alternates'] != u"":
+            filters.append("txt[%i] in u'%s'")
+        fun += "if "
+        fun += " and ".join(filters)
+        fun += ":\n"
 
         if rule['replace'] == u"_":
             replace = u""
