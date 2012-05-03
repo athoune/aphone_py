@@ -2,26 +2,27 @@ class Phonet(object):
 
     def __init__(self, desc):
         self.cpt = 0
-        for rule in desc['rules']:
-            print self.rule(rule)
+        for key, rules in desc['rules'].items():
+            for rule in rules:
+                print self.rule(rule)
 
     def rule(self, rule):
         self.cpt += 1
         txt_size = len(rule['text'])
         if rule['alternates'] != u"":
             txt_size += 1
-        fun = """def filter_%i(txt, out):
-""" % self.cpt
+        fun = """# %s
+def filter_%i(txt, out):
+    if """ % (rule['raw'], self.cpt)
         #  TODO handling ^ out == "" ? or a flag?
         filters = []
         if rule['ending']:
             filters.append("len(txt) >= %i" % txt_size)
         else:
             filters.append("len(txt) == %i" % txt_size)
-        filters.append("txt[:%i] == u'%s" % (len(rule['text']), rule['text']))
+        filters.append("txt[:%i] == u'%s'" % (len(rule['text']), rule['text']))
         if rule['alternates'] != u"":
-            filters.append("txt[%i] in u'%s'")
-        fun += "if "
+            filters.append("txt[%i] in u'%s'" % (len(rule['text']), rule['alternates']))
         fun += " and ".join(filters)
         fun += ":\n"
 
