@@ -21,10 +21,12 @@ class Phonet(object):
         if rule['alternates'] != u"":
             txt_size += 1
         fun = """# %s
-def filter_%i(txt, out):
+def filter_%i(txt, out, starting=false):
     if """ % (rule['raw'], self.cpt)
         #  TODO handling ^ out == "" ? or a flag?
         filters = []
+        if rule['starting']:
+            filters.append("starting")
         if rule['ending']:
             filters.append("len(txt) == %i" % txt_size)
         else:
