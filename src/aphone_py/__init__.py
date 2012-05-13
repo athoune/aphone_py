@@ -26,9 +26,9 @@ def filter_%i(txt, out):
         #  TODO handling ^ out == "" ? or a flag?
         filters = []
         if rule['ending']:
-            filters.append("len(txt) >= %i" % txt_size)
-        else:
             filters.append("len(txt) == %i" % txt_size)
+        else:
+            filters.append("len(txt) >= %i" % txt_size)
         filters.append("txt[:%i] == u'%s'" % (len(rule['text']), rule['text']))
         if rule['alternates'] != u"":
             filters.append("txt[%i] in u'%s'" % (len(rule['text']), rule['alternates']))
