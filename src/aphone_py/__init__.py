@@ -1,13 +1,22 @@
+from cStringIO import StringIO
+
+
 class Phonet(object):
 
-    def __init__(self, desc):
+    def __init__(self, desc, target=StringIO()):
         self.cpt = 0
+        filters = {}
         for key, rules in desc['rules'].items():
             for rule in rules:
-                print self.rule(rule)
+                self.cpt += 1
+                target.write(self.rule(rule).encode('utf-8'))
+                if key not in filters:
+                    filters[key] = []
+                filters[key].append("filter_%i" % self.cpt)
+        print filters
+        print target.getvalue()
 
     def rule(self, rule):
-        self.cpt += 1
         txt_size = len(rule['text'])
         if rule['alternates'] != u"":
             txt_size += 1
